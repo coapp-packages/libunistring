@@ -1,0 +1,32 @@
+#product-info  {
+    product-name: "libunistring";
+    version: "0.9.3";
+    original-source-location: "http://ftp.gnu.org/gnu/libunistring/libunistring-0.9.3.tar.gz";
+    original-source-website: "http://savannah.gnu.org/files/?group=libunistring";
+    license: "LGPL3";
+    packager: "Vincent Povirk <madewokherd@gmail.com>";
+}
+
+x86 {
+    compiler: vc10;
+    platform: x86;
+
+ 
+    targets: {
+        "COPKG\libunistring\Win32\Release\libunistring.lib",
+        "COPKG\libunistring\Win32\Release\libunistring.dll",
+    };
+
+
+    build-command: @"
+		msbuild /p:Platform=win32 /p:Configuration=Release COPKG\libunistring\libunistring.sln
+    ";
+ 
+    clean-command: @"
+		msbuild /p:Platform=win32 /p:Configuration=Release COPKG\libunistring\libunistring.sln /target:Clean
+    ";
+}
+
+release {
+	uses: x86;
+}
