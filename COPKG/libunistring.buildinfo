@@ -1,8 +1,10 @@
+@import "version.inc";
+
 #product-info  {
     product-name: "libunistring";
-    version: "0.9.3";
+    version: "${author-version}";
     original-source-location: "http://ftp.gnu.org/gnu/libunistring/libunistring-0.9.3.tar.gz";
-    original-source-website: "http://savannah.gnu.org/files/?group=libunistring";
+    original-source-website: "http://savannah.gnu.org/projects/libunistring";
     license: "LGPL3";
     packager: "Vincent Povirk <madewokherd@gmail.com>";
 }
@@ -27,6 +29,39 @@ x86 {
     ";
 }
 
+headers {
+    targets: {
+        @"COPKG\output\headers\unistring\version.h",
+    };
+
+    build-command: @"
+		mkdir COPKG\output\headers\unistring
+		copy lib\unistring\version.in.h COPKG\output\headers\unistring\version.h
+    ";
+
+	clean-command: @"rd /s /q COPKG\output";
+}
+
 release {
 	uses: x86;
+	uses: headers;
+}
+
+package
+{
+	targets:
+	{
+        @"COPKG\libunistring[vc10]-${package-version}-x86.msi",
+        @"COPKG\libunistring-dev-common-${package-version}-any.msi",
+        @"COPKG\libunistring-dev[vc10]-${package-version}-x86.msi",
+	};
+
+	build-command: @"
+		cd COPKG
+		autopackage libunistring.autopkg || goto failed
+		autopackage libunistring-dev-common.autopkg || goto failed
+		autopackage libunistring-dev.autopkg || goto failed
+	";
+
+	clean-command: @"del COPKG\*.msi COPKG\*.wixpdb";
 }

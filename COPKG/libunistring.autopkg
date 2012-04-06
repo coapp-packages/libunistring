@@ -1,0 +1,82 @@
+@import "version.inc";
+@import "outercurve.inc";
+
+#define { 
+    flavor: "${flav??vc10}"; 
+    arch : "${arc??x86}";
+	outdir : @"${out??libunistring\Win32\Release}";
+}
+
+package {
+    name: "libunistring[${flavor}]";
+    version: "${package-version}";
+    arch : "${arch}";
+    
+    display-name: "libunistring string manipulation library";
+    location: "http://coapp.org/repository/${OutputFilename}";
+
+    feed: "http://coapp.org/repository/packages.atom.xml";
+    publisher: "CoApp Project";
+}
+
+files[dlls] {
+    root: @"${outdir}";
+  
+    include: {
+        "libunistring.dll",
+    };
+    
+    trim-path: all;
+};
+
+license[lgpl3] {
+    license-url: "http://www.gnu.org/copyleft/lesser.html";
+	license: @"..\COPYING.LIB";
+    license-type: "lgpl3";
+}
+
+files[files-to-sign] {
+    include: { 
+        dlls
+    };
+}
+
+metadata {
+    summary: "The libunistring library";
+    description: @"libunistring is a library for manipulating unicode characters and strings in various formats."; // or path to a file...
+    
+    author-version : "${author-version}";
+    bug-tracker: "https://github.com/coapp-packages/libunistring/issues";
+    stability : "0";
+    licenses : {
+        lgpl3
+    };
+}
+
+compatability-policy {
+    minimum: "0.9.3.0";
+    maximum: "${OneLessThanCurrent}"; // this is the default
+    versions : {
+    }; // if not specified, find the versions by looking at the feeds and finding all the major/minor versions in range.
+}
+
+assembly[libunistring[${flav}]] {
+    include : {
+        dlls
+    };
+}
+
+signing {
+    attributes : {
+        company="Outercurve Foundation",
+        description="${Package.PackageDetails.SummaryDescription}",
+        product-name="libunistring",
+        product-version="${package-version}",
+        file-version="${package-version}",
+    };
+    
+    replace-signature: true; 
+    include: {
+        files-to-sign
+    };
+}
